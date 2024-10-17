@@ -1,0 +1,46 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title "Digital Wallet FullCycle"
+
+Person(clientAlias, "Client", "Digital Wallet User")
+
+System_Ext(apmAlias, "API Plataform Manager", "API Plataform Manager")
+
+System_Ext(secretManagerAlias, "Secret Manager", "Secret Manager")
+
+System_Ext(collectorAlias, "OTEL Collector", "Open Telemetry Collector")
+
+System_Ext(paymentGatewayAlias, "Payment Gateway", "Payment Processor")
+
+System_Boundary(walletBoundary, "Digital Wallet System"){
+    Container(frontendAlias, "React SPA", "React", "Digital Wallet Frontend")
+    Container(wallet_core, "Wallet Core", "Typescript", "Digital Wallet Core")
+    Container(balance_service, "Balance Service", "Typescript", "Returns customer balance")
+    Container(statement_service, "Statement Service", "Typescript", "Returns customer statement")
+    Container(payment_acl_service, "Payment ACL Service", "Typescript", "Anti corruption layer for payments")
+
+    ContainerDb(wallet_core_db, "Wallet Core Database", "PostgreSQL", "Stores wallet core data")
+    Rel(wallet_core, wallet_core_db, "Uses", "SQL")
+
+    ContainerDb(balance_db, "Balance Database", "PostgreSQL", "Stores balance data")
+    Rel(balance_service, balance_db, "Uses", "SQL")
+
+    ContainerDb(statement_db, "Statement Database", "PostgreSQL", "Stores statement data")
+    Rel(statement_service, statement_db, "Uses", "SQL")
+
+    ContainerDb(payment_acl_db, "Payment ACL Database", "PostgreSQL", "Stores payment ACL data")
+    Rel(payment_acl_service, payment_acl_db, "Uses", "SQL")
+
+    Rel(clientAlias, frontendAlias, "Uses", "JSON/HTTPS")
+
+    Rel(frontendAlias, wallet_core, "Uses", "JSON/HTTPS")
+    Rel(frontendAlias, balance_service, "Uses", "JSON/HTTPS")
+    Rel(frontendAlias, statement_service, "Uses", "JSON/HTTPS")
+
+    Rel(wallet_core, payment_acl_service, "Uses", "JSON/HTTPS")
+
+    Rel(payment_acl_service, paymentGatewayAlias, "Uses", "JSON/HTTPS")
+}
+
+@enduml
