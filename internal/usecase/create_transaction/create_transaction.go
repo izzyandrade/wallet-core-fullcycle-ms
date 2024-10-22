@@ -1,4 +1,4 @@
-package createTransaction
+package create_transaction
 
 import (
 	"github.com.br/devfullcycle/fc-ms-wallet/internal/entity"

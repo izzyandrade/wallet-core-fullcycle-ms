@@ -1,7 +1,9 @@
-package createClient
+package create_client
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com.br/devfullcycle/fc-ms-wallet/internal/entity"
 	"github.com.br/devfullcycle/fc-ms-wallet/internal/gateway"
@@ -31,11 +33,15 @@ func NewCreateClientUseCase(clientGateway gateway.ClientGateway) *CreateClientUs
 }
 
 func (uc *CreateClientUseCase) Execute(input CreateClientInputDTO) (*CreateClientOutputDTO, error) {
-	client, err := entity.NewClient(input.Name, input.Email)
-	if err != nil {
-		return nil, err
+	client := &entity.Client{
+		ID:        uuid.New().String(),
+		Name:      input.Name,
+		Email:     input.Email,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(), // Set UpdatedAt to the current time
 	}
-	err = uc.ClientGateway.Save(client)
+
+	err := uc.ClientGateway.Save(client)
 	if err != nil {
 		return nil, err
 	}

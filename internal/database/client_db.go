@@ -16,14 +16,14 @@ func NewClientDB(db *sql.DB) *ClientDB {
 
 func (c *ClientDB) Get(id string) (*entity.Client, error) {
 	client := &entity.Client{}
-	stmt, err := c.DB.Prepare("SELECT id, name, email, created_at FROM clients WHERE id = ?")
+	stmt, err := c.DB.Prepare("SELECT id, name, email, created_at, updated_at FROM clients WHERE id = ?")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
 	row := stmt.QueryRow(id)
-	err = row.Scan(&client.ID, &client.Name, &client.Email, &client.CreatedAt)
+	err = row.Scan(&client.ID, &client.Name, &client.Email, &client.CreatedAt, &client.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -32,13 +32,13 @@ func (c *ClientDB) Get(id string) (*entity.Client, error) {
 }
 
 func (c *ClientDB) Save(client *entity.Client) error {
-	stmt, err := c.DB.Prepare("INSERT INTO clients (id, name, email, created_at) VALUES (?, ?, ?, ?)")
+	stmt, err := c.DB.Prepare("INSERT INTO clients (id, name, email, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(client.ID, client.Name, client.Email, client.CreatedAt)
+	_, err = stmt.Exec(client.ID, client.Name, client.Email, client.CreatedAt, client.UpdatedAt)
 	if err != nil {
 		return err
 	}

@@ -46,3 +46,4 @@ debug
 
 # Project-specific ignore patterns
 # Add any other project-specific patterns here
+test.db

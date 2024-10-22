@@ -1,6 +1,7 @@
-package createAccount
+package create_account
 
 import (
+	"fmt"
 	"time"
 
 	"github.com.br/devfullcycle/fc-ms-wallet/internal/entity"
@@ -16,6 +17,7 @@ type CreateAccountOutputDTO struct {
 	ClientID  string
 	Balance   float64
 	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type CreateAccountUseCase struct {
@@ -41,6 +43,9 @@ func (uc *CreateAccountUseCase) Execute(input CreateAccountInputDTO) (*CreateAcc
 		return nil, err
 	}
 
+	// Log account ID
+	fmt.Printf("Created account with ID: %s\n", account.ID)
+
 	err = uc.AccountGateway.Save(account)
 	if err != nil {
 		return nil, err
@@ -51,6 +56,7 @@ func (uc *CreateAccountUseCase) Execute(input CreateAccountInputDTO) (*CreateAcc
 		ClientID:  account.Client.ID,
 		Balance:   account.Balance,
 		CreatedAt: account.CreatedAt,
+		UpdatedAt: account.UpdatedAt,
 	}
 
 	return output, nil
